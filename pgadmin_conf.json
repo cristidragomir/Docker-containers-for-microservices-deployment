@@ -1,0 +1,14 @@
+{
+    "Servers": {
+        "1": {
+            "Name": "Tema2SPRCserver",
+            "Group": "Servers",
+            "Host": "db_container",
+            "Port": 5432,
+            "MaintenanceDB": "myDb",
+            "Username": "postgres",
+            "SSLMode": "prefer",
+            "PassFile": "/tmp/pgpassfile"
+        }
+    }
+}

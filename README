@@ -1,0 +1,24 @@
+Pentru rularea ansamblului de containere se utilizeaza urmatoarea comanda:
+
+docker compose -f tema2SPRC.yml up --build
+
+Pentru oprirea ansamblului de containere (si stergerea volumelor create) se utilizeaza comanda:
+
+docker compose -f tema2SPRC.yml down
+
+Pentru a retine baza de date s-a utilizat tehnologia PostgreSQL, unde tabelele din baza de date sunt
+initializate automat din fisierul de configurare myDbInit.sql
+
+Ca utilitar de gestiune al bazelor de date s-a folosit pgadmin si s-a configurat in asa fel incat sa nu mai fie
+necesar logarea in utilitar, iar serverul ce se conecteaza la baza de date sa apara automat la pornirea
+containerelor in lista de servere (fisierul pgadmin_conf.json).
+
+Pentru a folosi utilitarul, se merge la adresa http://localhost:11111/
+
+API-ul s-a scris in fisierul tema2SPRC.py, iar in container si in host va rula pe portul 6000
+
+De-asemenea s-a utilizat fisierul .env in care s-au stocat anumite variabile de mediu
+necesare in fisierul tema2SPRC.yml de care comanda docker compose depinde
+
+In Dockerfile s-au scris comenzile necesare pentru crearea imaginii API-ului ce 
+va fi folosita de container

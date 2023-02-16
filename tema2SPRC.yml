@@ -1,0 +1,64 @@
+version: '3.6'
+services:
+  db:
+    container_name: ${DB_CONTAINER_NAME}
+    image: postgres
+    ports:
+      - "5432:5432"
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+       - ./myDbInit.sql:/docker-entrypoint-initdb.d/myDbInit.sql
+       - data:/var/lib/postgresql/data
+    networks:
+       - db_network
+
+  pgadmin:
+    container_name: ${PGADMIN_CONTAINER_NAME}
+    image: dpage/pgadmin4
+    environment: 
+        PGADMIN_DEFAULT_EMAIL: "${PGADMIN_DEFAULT_EMAIL}"
+        PGADMIN_DEFAULT_PASSWORD: "${PGADMIN_DEFAULT_PASSWORD}"
+        PGADMIN_CONFIG_SERVER_MODE: "False"
+        PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: "False"
+    ports: 
+        - "11111:80"
+    depends_on: 
+        - db
+    volumes:
+        - ./pgadmin_conf.json:/pgadmin4/servers.json
+    entrypoint:
+        - "/bin/sh"
+        - "-c"
+        - "/bin/echo '${DB_CONTAINER_NAME}:5432:${POSTGRES_DB}:${POSTGRES_USER}:${POSTGRES_PASSWD}' > /tmp/pgpassfile && chmod 600 /tmp/pgpassfile && /entrypoint.sh"
+    networks:
+        - pgadmin_network
+        - db_network
+
+  rest_api:
+    build: .
+    container_name: ${REST_API_CONTAINER_NAME}
+    ports: 
+      - "6000:6000" 
+    depends_on:
+      - db
+    networks:
+      - rest_api_network
+      - db_network     
+
+networks:
+  db_network:
+    external: false
+    name: db_network
+  pgadmin_network:
+    external: false
+    name: pgadmin_network
+  rest_api_network:
+    external: false
+    name: rest_api_network
+
+volumes:
+    data:
